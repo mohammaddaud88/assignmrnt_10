@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Handle Multiple Async Operations</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+    .output {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      display: inline-block;
+      text-align: left;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Handle Multiple Async Operations</h1>
+  <button id="startButton">Fetch and Process Data</button>
+  <div class="output" id="output"></div>
+
+  <script>
+    // Simulate fetching data from an API
+    function fetchData() {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({ name: "John", age: 25 });
+        }, 1000);
+      });
+    }
+
+    // Simulate processing the fetched data
+    function processData(data) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          data.occupation = "Developer";
+          resolve(data);
+        }, 1000);
+      });
+    }
+
+    // Handle button click
+    document.getElementById('startButton').addEventListener('click', () => {
+      const outputElement = document.getElementById('output');
+      outputElement.innerHTML = "Processing...";
+
+      // Chain promises for fetching and processing
+      fetchData()
+        .then(fetchedData => {
+          outputElement.innerHTML = `<p>Fetched Data: ${JSON.stringify(fetchedData)}</p>`;
+          return processData(fetchedData);
+        })
+        .then(processedData => {
+          outputElement.innerHTML += `<p>Processed Data: ${JSON.stringify(processedData)}</p>`;
+        })
+        .catch(error => {
+          outputElement.innerHTML = `<p>Error: ${error}</p>`;
+        });
+    });
+  </script>
+</body>
+</html>
